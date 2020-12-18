@@ -1,11 +1,15 @@
 package com.example.android.customfancontroller
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
 private enum class FanSpeed(val label: Int) {
     OFF(R.string.fan_off),
@@ -31,6 +35,23 @@ class DialView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         textSize = 55.0f
         typeface = Typeface.create( "", Typeface.BOLD)
+    }
+
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        radius = (min(width, height) / 2.0 * 0.8).toFloat()
+    }
+
+    private fun PointF.computeXYForSpeed(pos: FanSpeed, radius: Float) {
+        // Angles are in radians.
+        val startAngle = Math.PI * (9 / 8.0)
+        val angle = startAngle + pos.ordinal * (Math.PI / 4)
+        x = (radius * cos(angle)).toFloat() + width / 2
+        y = (radius * sin(angle)).toFloat() + height / 2
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+
     }
 
 }
